@@ -31,9 +31,14 @@ export default function App() {
     setLogLevel('debug');
     
     // Firebase App ID
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const appId = typeof __app_id !== 'undefined' ? __app_id : '1:860332208399:web:ecb9c82b2424ec1483ce7a';
     // Firebase configuration
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {apiKey: "AIzaSyDnVhSJCv3ZUgncrmhcGk3gwO4W4BjmEHc",
+      authDomain: "fcmc-a0110.firebaseapp.com",
+      projectId: "fcmc-a0110",
+      storageBucket: "fcmc-a0110.firebasestorage.app",
+      messagingSenderId: "860332208399",
+      appId: "1:860332208399:web:ecb9c82b2424ec1483ce7a"};
     // Firebase custom auth token
     const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : '';
     
@@ -857,3 +862,4 @@ export default function App() {
     </div>
   );
 }
+
