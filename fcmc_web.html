@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, doc, onSnapshot, collection, query, updateDoc, addDoc, getDocs, setLogLevel, setDoc } from 'firebase/firestore';
@@ -20,7 +19,14 @@ export default function App() {
   const [editorContent, setEditorContent] = useState('');
   const [playersData, setPlayersData] = useState([]);
   const [top10PlayersData, setTop10PlayersData] = useState({});
-  
+
+  // Fix for CDN-based setup
+  const { useState, useEffect } = React;
+  const firebase = window.firebase;
+  const { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut } = firebase.auth;
+  const { getFirestore, doc, onSnapshot, collection, query, updateDoc, addDoc, getDocs, setLogLevel, setDoc } = firebase.firestore;
+  const { initializeApp } = firebase.app;
+
   // This is the editor's ID. To log in as an editor, paste your ID here.
   // The user's UID is displayed on the top right when logged in.
   const editorId = "06368865647689072591";
@@ -29,8 +35,8 @@ export default function App() {
   useEffect(() => {
     // Set Firebase debug log level
     setLogLevel('debug');
-    
-    // Firebase App ID
+
+// Firebase App ID
     const appId = typeof __app_id !== 'undefined' ? __app_id : '1:860332208399:web:ecb9c82b2424ec1483ce7a';
     // Firebase configuration
     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {apiKey: "AIzaSyDnVhSJCv3ZUgncrmhcGk3gwO4W4BjmEHc",
@@ -41,7 +47,7 @@ export default function App() {
       appId: "1:860332208399:web:ecb9c82b2424ec1483ce7a"};
     // Firebase custom auth token
     const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : '';
-    
+
     // Initial data for the editor content, including the new player review
     const initialEditorData = {
       "playersData": [
@@ -195,7 +201,7 @@ export default function App() {
         "GK": []
       }
     };
-    
+
     try {
       const app = initializeApp(firebaseConfig);
       const authInstance = getAuth(app);
@@ -240,7 +246,7 @@ export default function App() {
             }, (error) => {
               console.error("Error fetching editor content:", error);
             });
-            
+
             // Set up the real-time listener for redeem codes
             const codesQuery = query(codesRef);
             const unsubscribeSnapshot = onSnapshot(codesQuery, (snapshot) => {
@@ -250,7 +256,7 @@ export default function App() {
             }, (error) => {
               console.error("Error fetching real-time redeem codes:", error);
             });
-            
+
             // Check if redeem code collection is empty and add initial data if needed
             const codesSnapshot = await getDocs(codesRef);
             if (codesSnapshot.empty) {
@@ -280,7 +286,7 @@ export default function App() {
           console.log("User signed out.");
         }
       });
-      
+
       const signIn = async () => {
         try {
           if (initialAuthToken) {
@@ -317,7 +323,7 @@ export default function App() {
       setCopiedCodeId(null);
     }, 15000); // 15 seconds
   };
-  
+
   // Function to toggle code availability
   const toggleCodeAvailability = async (codeId, isAvailable) => {
     try {
@@ -376,7 +382,7 @@ export default function App() {
       <Card title="Contact" description="Get in touch with us through our social media." onClick={() => setCurrentPage('contact')} />
     </div>
   );
-  
+
   // Card component
   const Card = ({ title, description, onClick }) => (
     <div onClick={onClick} className={`${theme === 'dark' ? 'bg-[#1c1c1c] text-gray-400' : 'bg-white text-gray-700'} rounded-lg p-6 shadow-xl hover:bg-gray-800 transition-colors duration-200 cursor-pointer`}>
@@ -439,10 +445,10 @@ export default function App() {
           <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Weak Foot: <span className="font-semibold">{selectedPlayer.weakFoot}</span>/5</p>
           <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Skill Moves: <span className="font-semibold">{selectedPlayer.skillMoves}</span>/5</p>
           <p className={`text-lg ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Stamina: <span className="font-semibold">{selectedPlayer.stamina}</span></p>
-          
+
           <div className="mt-6 space-y-4">
             <h4 className="text-xl font-bold text-blue-400">Review Breakdown:</h4>
-            
+
             <div>
               <h5 className="text-lg font-semibold text-green-400">Strengths:</h5>
               <ul className="list-disc list-inside space-y-1">
@@ -451,7 +457,7 @@ export default function App() {
                 ))}
               </ul>
             </div>
-            
+
             <div>
               <h5 className="text-lg font-semibold text-red-400">Weaknesses:</h5>
               <ul className="list-disc list-inside space-y-1">
@@ -460,7 +466,7 @@ export default function App() {
                 ))}
               </ul>
             </div>
-            
+
             <div>
               <h5 className="text-lg font-semibold text-blue-400">Summary:</h5>
               <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>{selectedPlayer.review.summary}</p>
@@ -490,7 +496,7 @@ export default function App() {
             </button>
           ))}
         </div>
-        
+
         {selectedPosition && (
           <div className="mt-6">
             <h3 className={`text-xl font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>Position: {selectedPosition}</h3>
@@ -583,7 +589,7 @@ export default function App() {
         showModalMessage('Failed to save content.');
       }
     };
-    
+
     // Function to handle changes in the new player form
     const handleNewPlayerChange = (e) => {
       const { name, value } = e.target;
@@ -673,7 +679,7 @@ export default function App() {
     return (
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold text-blue-400">Editor Dashboard</h2>
-        
+
         {/* Section to add a new player review */}
         <div className={`rounded-lg p-6 shadow-xl space-y-4 ${theme === 'dark' ? 'bg-[#1c1c1c]' : 'bg-gray-200'}`}>
           <h3 className="text-xl font-semibold text-blue-400">Add New Player Review</h3>
@@ -696,7 +702,7 @@ export default function App() {
             Add New Player Review
           </button>
         </div>
-        
+
         {/* Section to remove existing player reviews */}
         <div className={`rounded-lg p-6 shadow-xl space-y-4 ${theme === 'dark' ? 'bg-[#1c1c1c]' : 'bg-gray-200'}`}>
           <h3 className="text-xl font-semibold text-blue-400">Remove Player Reviews</h3>
@@ -862,4 +868,3 @@ export default function App() {
     </div>
   );
 }
-
